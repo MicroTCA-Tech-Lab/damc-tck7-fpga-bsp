@@ -36,6 +36,16 @@ Xilinx driver: [AR# 65444](https://www.xilinx.com/support/answers/65444.html)
 
 ![IBERT scan](docs/images/ibert_on_sfp_scan.png)
 
+The on-board oscillator are configured by a MicroBlaze processor upon start-up.
+Because the Xilinx IBERT core does not have a reset connection, it starts
+before the oscillators are configured, which results in QPLLs in MGTs
+(COMMON_X0Y2/QPLL_0 and COMMON_X0Y3/QPLL_0) not being locked.
+
+Is is necessary to reset the QPLLs by writing 1 and then 0 to PORT.QPLLRESET
+in both QPLLs. Another alternative solution is to configure the FPGA for the
+second time; the oscillators are already stable at this point and the QPLLs
+will lock.
+
 ### On-board clock configuration
 
 ![Clock-config](docs/images/microblaze_uart.png)
