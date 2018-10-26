@@ -1,0 +1,5 @@
+
+# project should not be included in Git, use tcl scripts
+/project
+!/project/placeholder.txt
+
