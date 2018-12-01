@@ -20,7 +20,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2017.4
+set scripts_vivado_version 2018.2
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -125,14 +125,14 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:smartconnect:1.0\
-xilinx.com:ip:clk_wiz:5.4\
+xilinx.com:ip:clk_wiz:6.0\
 xilinx.com:ip:gig_ethernet_pcs_pma:16.1\
-xilinx.com:ip:mig_7series:4.0\
+xilinx.com:ip:mig_7series:4.1\
 xilinx.com:ip:proc_sys_reset:5.0\
 desy.de:user:tck7_sfp_ibert:1.0\
 desy.de:user:tck7_udp_beacon_top:1.0\
 xilinx.com:ip:util_ds_buf:2.1\
-xilinx.com:ip:xdma:4.0\
+xilinx.com:ip:xdma:4.1\
 xilinx.com:ip:xlconcat:2.1\
 xilinx.com:ip:xlconstant:1.1\
 xilinx.com:ip:xlslice:1.0\
@@ -554,6 +554,7 @@ proc create_hier_cell_mb { parentCell nameHier } {
    CONFIG.C_MMU_ZONES {2} \
    CONFIG.C_USE_BARREL {1} \
    CONFIG.C_USE_HW_MUL {1} \
+   CONFIG.C_USE_INTERRUPT {1} \
    CONFIG.C_USE_MSR_INSTR {1} \
    CONFIG.C_USE_PCMP_INSTR {1} \
    CONFIG.C_USE_REORDER_INSTR {0} \
@@ -604,48 +605,6 @@ proc create_hier_cell_mb { parentCell nameHier } {
   connect_bd_net -net rst_microblaze_0_Clk_100M_mb_reset [get_bd_pins microblaze_0/Reset] [get_bd_pins microblaze_0_axi_intc/processor_rst] [get_bd_pins rst_microblaze_0_Clk_100M/mb_reset]
   connect_bd_net -net rst_microblaze_0_Clk_100M_peripheral_aresetn [get_bd_pins axi_iic_0/s_axi_aresetn] [get_bd_pins axi_uartlite_0/s_axi_aresetn] [get_bd_pins microblaze_0_axi_intc/s_axi_aresetn] [get_bd_pins microblaze_0_axi_periph/M00_ARESETN] [get_bd_pins microblaze_0_axi_periph/M01_ARESETN] [get_bd_pins microblaze_0_axi_periph/M02_ARESETN] [get_bd_pins microblaze_0_axi_periph/S00_ARESETN] [get_bd_pins rst_microblaze_0_Clk_100M/peripheral_aresetn]
   connect_bd_net -net sys_rst_0_1 [get_bd_pins fpga_reset_n] [get_bd_pins rst_microblaze_0_Clk_100M/ext_reset_in]
-
-  # Perform GUI Layout
-  regenerate_bd_layout -hierarchy [get_bd_cells /mb] -layout_string {
-   ExpandedHierarchyInLayout: "",
-   guistr: "# # String gsaved with Nlview 6.6.11  2017-06-12 bk=1.3860 VDI=40 GEI=35 GUI=JA:1.6
-#  -string -flagsOSRD
-preplace port s_axi_aclk -pg 1 -y 530 -defaultsOSRD
-preplace port UART_0 -pg 1 -y 300 -defaultsOSRD
-preplace port fpga_reset_n -pg 1 -y 600 -defaultsOSRD
-preplace port IIC_0 -pg 1 -y 170 -defaultsOSRD
-preplace inst axi_iic_0 -pg 1 -lvl 5 -y 180 -defaultsOSRD
-preplace inst rst_microblaze_0_Clk_100M -pg 1 -lvl 1 -y 620 -defaultsOSRD
-preplace inst microblaze_0_axi_periph -pg 1 -lvl 4 -y 150 -defaultsOSRD
-preplace inst microblaze_0_xlconcat -pg 1 -lvl 1 -y 390 -defaultsOSRD
-preplace inst microblaze_0_axi_intc -pg 1 -lvl 2 -y 380 -defaultsOSRD
-preplace inst mdm_1 -pg 1 -lvl 2 -y 220 -defaultsOSRD
-preplace inst microblaze_0 -pg 1 -lvl 3 -y 390 -defaultsOSRD
-preplace inst axi_uartlite_0 -pg 1 -lvl 5 -y 310 -defaultsOSRD
-preplace inst microblaze_0_local_memory -pg 1 -lvl 4 -y 400 -defaultsOSRD
-preplace netloc microblaze_0_intr 1 1 1 N
-preplace netloc axi_uartlite_0_interrupt 1 0 6 10 500 NJ 500 NJ 500 NJ 500 NJ 500 1760
-preplace netloc axi_iic_0_iic2intc_irpt 1 0 6 30 490 NJ 490 NJ 490 NJ 490 NJ 490 1770
-preplace netloc microblaze_0_Clk 1 0 5 10 510 390 510 650 470 1180 480 1500
-preplace netloc microblaze_0_interrupt 1 2 1 650
-preplace netloc microblaze_0_intc_axi 1 1 4 400 280 NJ 280 1170J 310 1470
-preplace netloc rst_microblaze_0_Clk_100M_peripheral_aresetn 1 1 4 400 530 670J 510 1190 510 1510
-preplace netloc microblaze_0_ilmb_1 1 3 1 N
-preplace netloc microblaze_0_axi_dp 1 3 1 1160
-preplace netloc rst_microblaze_0_Clk_100M_bus_struct_reset 1 1 3 NJ 600 NJ 600 1200
-preplace netloc microblaze_0_axi_periph_M01_AXI 1 4 1 1490
-preplace netloc axi_uartlite_0_UART 1 5 1 NJ
-preplace netloc axi_iic_0_IIC 1 5 1 1770J
-preplace netloc sys_rst_0_1 1 0 1 NJ
-preplace netloc microblaze_0_dlmb_1 1 3 1 N
-preplace netloc microblaze_0_axi_periph_M02_AXI 1 4 1 1480
-preplace netloc microblaze_0_debug 1 2 1 660
-preplace netloc rst_microblaze_0_Clk_100M_mb_reset 1 1 2 380 520 660
-preplace netloc mdm_1_debug_sys_rst 1 0 3 20 480 NJ 480 640
-preplace netloc rst_microblaze_0_Clk_100M_interconnect_aresetn 1 1 3 370J 90 NJ 90 N
-levelinfo -pg 1 -10 200 520 920 1340 1640 1790 -top -10 -bot 720
-",
-}
 
   # Restore current instance
   current_bd_instance $oldCurInst
@@ -726,7 +685,7 @@ proc create_root_design { parentCell } {
  ] $axi_smc
 
   # Create instance: clk_wiz_0, and set properties
-  set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:5.4 clk_wiz_0 ]
+  set clk_wiz_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_0 ]
   set_property -dict [ list \
    CONFIG.CLKIN1_JITTER_PS {200.0} \
    CONFIG.CLKOUT1_JITTER {142.107} \
@@ -764,7 +723,7 @@ proc create_root_design { parentCell } {
   create_hier_cell_mb [current_bd_instance .] mb
 
   # Create instance: mig_7series_0, and set properties
-  set mig_7series_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series:4.0 mig_7series_0 ]
+  set mig_7series_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series:4.1 mig_7series_0 ]
 
   # Generate the PRJ File for MIG
   set str_mig_folder [get_property IP_DIR [ get_ips [ get_property CONFIG.Component_Name $mig_7series_0 ] ] ]
@@ -796,7 +755,7 @@ proc create_root_design { parentCell } {
  ] $util_ds_buf
 
   # Create instance: xdma_0, and set properties
-  set xdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xdma:4.0 xdma_0 ]
+  set xdma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xdma:4.1 xdma_0 ]
   set_property -dict [ list \
    CONFIG.PF0_DEVICE_ID_mqdma {9024} \
    CONFIG.PF2_DEVICE_ID_mqdma {9024} \
@@ -805,8 +764,13 @@ proc create_root_design { parentCell } {
    CONFIG.axilite_master_en {true} \
    CONFIG.axisten_freq {250} \
    CONFIG.cfg_mgmt_if {false} \
+   CONFIG.pcie_id_if {false} \
+   CONFIG.pciebar2axibar_axil_master {0x0000000000000000} \
    CONFIG.pciebar2axibar_axist_bypass {0x0000000000000000} \
    CONFIG.pf0_device_id {7024} \
+   CONFIG.pf1_bar0_scale {Kilobytes} \
+   CONFIG.pf1_bar0_size {128} \
+   CONFIG.pf1_bar1_enabled {false} \
    CONFIG.pl_link_cap_max_link_speed {5.0_GT/s} \
    CONFIG.pl_link_cap_max_link_width {X4} \
    CONFIG.plltype {QPLL1} \
@@ -902,7 +866,7 @@ proc create_root_design { parentCell } {
   # Perform GUI Layout
   regenerate_bd_layout -layout_string {
    ExpandedHierarchyInLayout: "",
-   guistr: "# # String gsaved with Nlview 6.6.11  2017-06-12 bk=1.3860 VDI=40 GEI=35 GUI=JA:1.6
+   guistr: "# # String gsaved with Nlview 6.8.5  2018-01-30 bk=1.4354 VDI=40 GEI=35 GUI=JA:1.6 non-TLS
 #  -string -flagsOSRD
 preplace port DDR3_0 -pg 1 -y 410 -defaultsOSRD
 preplace port UART_0 -pg 1 -y 570 -defaultsOSRD
@@ -921,64 +885,64 @@ preplace portBus SFP_GTREFCLK1P_I_0 -pg 1 -y 890 -defaultsOSRD
 preplace portBus SFP_GTREFCLK0P_I_0 -pg 1 -y 850 -defaultsOSRD
 preplace portBus SFP_RXP_I_0 -pg 1 -y 830 -defaultsOSRD
 preplace portBus SFP_RXN_I_0 -pg 1 -y 810 -defaultsOSRD
-preplace inst tck7_sfp_ibert_0 -pg 1 -lvl 1 -y 870 -defaultsOSRD
 preplace inst xlslice_0 -pg 1 -lvl 3 -y 1030 -defaultsOSRD
-preplace inst xlconstant_0 -pg 1 -lvl 4 -y 140 -defaultsOSRD
+preplace inst tck7_sfp_ibert_0 -pg 1 -lvl 1 -y 870 -defaultsOSRD
+preplace inst xlconstant_0 -pg 1 -lvl 4 -y 130 -defaultsOSRD
 preplace inst mig_7series_0 -pg 1 -lvl 4 -y 450 -defaultsOSRD
 preplace inst xlconstant_1 -pg 1 -lvl 4 -y 1240 -defaultsOSRD
-preplace inst mb -pg 1 -lvl 5 -y 560 -defaultsOSRD
 preplace inst axi_smc -pg 1 -lvl 3 -y 410 -defaultsOSRD
-preplace inst xlconcat_0 -pg 1 -lvl 5 -y 150 -defaultsOSRD
-preplace inst xdma_0_axi_periph -pg 1 -lvl 3 -y 230 -defaultsOSRD
-preplace inst rst_mig_7series_0_133M -pg 1 -lvl 2 -y 670 -defaultsOSRD
+preplace inst mb -pg 1 -lvl 5 -y 560 -defaultsOSRD
+preplace inst xdma_0_axi_periph -pg 1 -lvl 3 -y 220 -defaultsOSRD
 preplace inst axi_gpio_0 -pg 1 -lvl 4 -y 250 -defaultsOSRD
+preplace inst xlconcat_0 -pg 1 -lvl 5 -y 150 -defaultsOSRD
+preplace inst rst_mig_7series_0_133M -pg 1 -lvl 2 -y 670 -defaultsOSRD
 preplace inst util_ds_buf -pg 1 -lvl 1 -y 120 -defaultsOSRD
 preplace inst xdma_0 -pg 1 -lvl 2 -y 130 -defaultsOSRD
-preplace inst tck7_udp_beacon_top_0 -pg 1 -lvl 4 -y 1020 -defaultsOSRD
 preplace inst gig_ethernet_pcs_pma_0 -pg 1 -lvl 5 -y 1110 -defaultsOSRD
 preplace inst clk_wiz_0 -pg 1 -lvl 3 -y 760 -defaultsOSRD
+preplace inst tck7_udp_beacon_top_0 -pg 1 -lvl 4 -y 1010 -defaultsOSRD
 preplace inst xlconstant_rst_0 -pg 1 -lvl 4 -y 1140 -defaultsOSRD
 preplace netloc gig_ethernet_pcs_pma_0_sfp 1 5 1 NJ
 preplace netloc xlconstant_rst_0_dout 1 4 1 NJ
-preplace netloc xlconstant_1_dout 1 4 1 1340J
-preplace netloc mig_7series_0_mmcm_locked 1 1 4 330 560 NJ 560 NJ 560 1320
-preplace netloc tck7_udp_beacon_top_0_GMII 1 4 1 1330
+preplace netloc xlconstant_1_dout 1 4 1 1380J
+preplace netloc mig_7series_0_mmcm_locked 1 1 4 330 560 NJ 560 NJ 560 1360
+preplace netloc tck7_udp_beacon_top_0_GMII 1 4 1 1380
 preplace netloc GTREFCLK0P_I_0_1 1 0 1 NJ
 preplace netloc mig_7series_0_DDR3 1 4 2 NJ 410 NJ
 preplace netloc util_ds_buf_IBUF_OUT 1 1 1 NJ
-preplace netloc mig_7series_0_init_calib_complete 1 4 1 1350
+preplace netloc mig_7series_0_init_calib_complete 1 4 1 1390
 preplace netloc GTREFCLK0N_I_0_1 1 0 1 NJ
-preplace netloc microblaze_0_Clk 1 3 2 N 780 1350
+preplace netloc microblaze_0_Clk 1 3 2 N 780 1400
 preplace netloc axi_smc_M00_AXI 1 3 1 N
-preplace netloc xdma_0_axi_aclk 1 2 2 710 110 1010
+preplace netloc xdma_0_axi_aclk 1 2 2 720 100 1040
 preplace netloc tck7_sfp_ibert_0_TXN_O 1 1 5 NJ 860 NJ 860 NJ 860 NJ 860 NJ
 preplace netloc diff_clock_rtl_0_1 1 0 1 NJ
-preplace netloc xdma_0_axi_aresetn 1 2 2 720 100 1040
-preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 700 490 NJ
-preplace netloc mig_7series_0_ui_clk 1 1 4 340 530 720 530 1020J 540 1330
+preplace netloc xdma_0_axi_aresetn 1 2 2 730 90 1060
+preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 700 500 1040J
+preplace netloc mig_7series_0_ui_clk 1 1 4 340 550 720 580 NJ 580 1370
 preplace netloc RXN_I_0_1 1 0 1 NJ
-preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 N
-preplace netloc xlconstant_0_dout 1 4 1 1320J
-preplace netloc xlconcat_0_dout 1 4 2 NJ 260 1700
-preplace netloc gig_ethernet_pcs_pma_0_userclk2_out 1 3 3 1030 930 NJ 930 1690
+preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 1030
+preplace netloc xlconstant_0_dout 1 4 1 1400J
+preplace netloc xlconcat_0_dout 1 4 2 NJ 260 1770
+preplace netloc gig_ethernet_pcs_pma_0_userclk2_out 1 3 3 1050 920 NJ 920 1760
 preplace netloc clk_wiz_0_clk_out1 1 3 1 1030
-preplace netloc clk_in1_0_1 1 0 3 20 760 NJ 760 NJ
+preplace netloc clk_in1_0_1 1 0 3 20 750 340J 770 710J
 preplace netloc RXP_I_0_1 1 0 1 NJ
-preplace netloc xdma_0_M_AXI 1 2 1 690
 preplace netloc axi_uartlite_0_UART 1 5 1 NJ
 preplace netloc axi_iic_0_IIC 1 5 1 NJ
-preplace netloc sys_rst_0_1 1 0 5 NJ 180 320 540 NJ 540 1010 550 NJ
-preplace netloc mig_7series_0_ui_clk_sync_rst 1 1 4 350 570 NJ 570 NJ 570 1340
-preplace netloc clk_wiz_0_clk_out2 1 3 1 1040
-preplace netloc xdma_0_pcie_mgt 1 2 4 NJ 90 NJ 90 NJ 90 NJ
+preplace netloc xdma_0_M_AXI 1 2 1 710
+preplace netloc sys_rst_0_1 1 0 5 20J 190 320 540 NJ 540 1060 550 NJ
+preplace netloc mig_7series_0_ui_clk_sync_rst 1 1 4 350 570 NJ 570 NJ 570 1380
+preplace netloc clk_wiz_0_clk_out2 1 3 1 1050
+preplace netloc xdma_0_pcie_mgt 1 2 4 700J 70 NJ 70 NJ 70 1770J
 preplace netloc tck7_sfp_ibert_0_TXP_O 1 1 5 NJ 880 NJ 880 NJ 880 NJ 880 NJ
 preplace netloc GTREFCLK1N_I_0_1 1 0 1 NJ
-preplace netloc xdma_0_M_AXI_LITE 1 2 1 700
-preplace netloc gigeth_gtrefclk_1 1 0 5 NJ 1080 NJ 1080 NJ 1080 NJ 1080 NJ
-preplace netloc gig_ethernet_pcs_pma_0_status_vector 1 2 4 710 910 NJ 910 NJ 910 1700
+preplace netloc gigeth_gtrefclk_1 1 0 5 20J 1090 NJ 1090 NJ 1090 1050J 1080 NJ
+preplace netloc xdma_0_M_AXI_LITE 1 2 1 690
+preplace netloc gig_ethernet_pcs_pma_0_status_vector 1 2 4 710 910 NJ 910 NJ 910 1770
 preplace netloc GTREFCLK1P_I_0_1 1 0 1 NJ
-preplace netloc xlslice_0_Dout 1 3 1 NJ
-levelinfo -pg 1 0 170 520 870 1180 1520 1730 -top 0 -bot 1290
+preplace netloc xlslice_0_Dout 1 3 1 1040J
+levelinfo -pg 1 0 170 520 880 1220 1590 1810 -top -10 -bot 1300
 ",
 }
 

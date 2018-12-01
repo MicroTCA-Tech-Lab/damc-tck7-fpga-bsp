@@ -52,7 +52,7 @@ will lock.
 
 ## Recreating project
 
-**This project requires Vivado version 2017.4**
+**This project requires Vivado version 2018.2**
 
 ![Vivado project](docs/images/vivado_prj.png)
 
