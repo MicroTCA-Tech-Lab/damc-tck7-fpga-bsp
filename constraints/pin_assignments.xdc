@@ -67,12 +67,3 @@ set_property PACKAGE_PIN AB20 [get_ports UART_0_rxd]
 set_property IOSTANDARD LVCMOS33 [get_ports UART_0_rxd]
 set_property PACKAGE_PIN AC20 [get_ports UART_0_txd]
 set_property IOSTANDARD LVCMOS33 [get_ports UART_0_txd]
-
-# port 0
-set_property PACKAGE_PIN AC8 [get_ports gigeth_gtrefclk_clk_p]
-set_property PACKAGE_PIN AH9 [get_ports amc_port0_rxn]
-set_property PACKAGE_PIN AH10 [get_ports amc_port0_rxp]
-set_property PACKAGE_PIN AJ11 [get_ports amc_port0_txn]
-set_property PACKAGE_PIN AJ12 [get_ports amc_port0_txp]
-
-

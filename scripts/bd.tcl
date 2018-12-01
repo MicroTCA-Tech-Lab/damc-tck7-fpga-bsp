@@ -126,16 +126,12 @@ if { $bCheckIPs == 1 } {
 xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:ip:smartconnect:1.0\
 xilinx.com:ip:clk_wiz:6.0\
-xilinx.com:ip:gig_ethernet_pcs_pma:16.1\
 xilinx.com:ip:mig_7series:4.1\
 xilinx.com:ip:proc_sys_reset:5.0\
-desy.de:user:tck7_sfp_ibert:1.0\
-desy.de:user:tck7_udp_beacon_top:1.0\
 xilinx.com:ip:util_ds_buf:2.1\
 xilinx.com:ip:xdma:4.1\
 xilinx.com:ip:xlconcat:2.1\
 xilinx.com:ip:xlconstant:1.1\
-xilinx.com:ip:xlslice:1.0\
 xilinx.com:ip:axi_iic:2.0\
 xilinx.com:ip:axi_uartlite:2.0\
 xilinx.com:ip:mdm:3.2\
@@ -647,8 +643,6 @@ proc create_root_design { parentCell } {
   set DDR3_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 DDR3_0 ]
   set IIC_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:iic_rtl:1.0 IIC_0 ]
   set UART_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:uart_rtl:1.0 UART_0 ]
-  set amc_port0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:sfp_rtl:1.0 amc_port0 ]
-  set gigeth_gtrefclk [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 gigeth_gtrefclk ]
   set pcie_7x_mgt_rtl_0 [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:pcie_7x_mgt_rtl:1.0 pcie_7x_mgt_rtl_0 ]
   set pcie_clk [ create_bd_intf_port -mode Slave -vlnv xilinx.com:interface:diff_clock_rtl:1.0 pcie_clk ]
   set_property -dict [ list \
@@ -656,14 +650,6 @@ proc create_root_design { parentCell } {
    ] $pcie_clk
 
   # Create ports
-  set SFP_GTREFCLK0N_I_0 [ create_bd_port -dir I -from 1 -to 0 SFP_GTREFCLK0N_I_0 ]
-  set SFP_GTREFCLK0P_I_0 [ create_bd_port -dir I -from 1 -to 0 SFP_GTREFCLK0P_I_0 ]
-  set SFP_GTREFCLK1N_I_0 [ create_bd_port -dir I -from 1 -to 0 SFP_GTREFCLK1N_I_0 ]
-  set SFP_GTREFCLK1P_I_0 [ create_bd_port -dir I -from 1 -to 0 SFP_GTREFCLK1P_I_0 ]
-  set SFP_RXN_I_0 [ create_bd_port -dir I -from 7 -to 0 SFP_RXN_I_0 ]
-  set SFP_RXP_I_0 [ create_bd_port -dir I -from 7 -to 0 SFP_RXP_I_0 ]
-  set SFP_TXN_O_0 [ create_bd_port -dir O -from 7 -to 0 SFP_TXN_O_0 ]
-  set SFP_TXP_O_0 [ create_bd_port -dir O -from 7 -to 0 SFP_TXP_O_0 ]
   set clk_50 [ create_bd_port -dir I -type clk clk_50 ]
   set_property -dict [ list \
    CONFIG.FREQ_HZ {50000000} \
@@ -711,14 +697,6 @@ proc create_root_design { parentCell } {
    CONFIG.USE_RESET {false} \
  ] $clk_wiz_0
 
-  # Create instance: gig_ethernet_pcs_pma_0, and set properties
-  set gig_ethernet_pcs_pma_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:gig_ethernet_pcs_pma:16.1 gig_ethernet_pcs_pma_0 ]
-  set_property -dict [ list \
-   CONFIG.Auto_Negotiation {false} \
-   CONFIG.Management_Interface {false} \
-   CONFIG.SupportLevel {Include_Shared_Logic_in_Core} \
- ] $gig_ethernet_pcs_pma_0
-
   # Create instance: mb
   create_hier_cell_mb [current_bd_instance .] mb
 
@@ -741,12 +719,6 @@ proc create_root_design { parentCell } {
 
   # Create instance: rst_mig_7series_0_133M, and set properties
   set rst_mig_7series_0_133M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_mig_7series_0_133M ]
-
-  # Create instance: tck7_sfp_ibert_0, and set properties
-  set tck7_sfp_ibert_0 [ create_bd_cell -type ip -vlnv desy.de:user:tck7_sfp_ibert:1.0 tck7_sfp_ibert_0 ]
-
-  # Create instance: tck7_udp_beacon_top_0, and set properties
-  set tck7_udp_beacon_top_0 [ create_bd_cell -type ip -vlnv desy.de:user:tck7_udp_beacon_top:1.0 tck7_udp_beacon_top_0 ]
 
   # Create instance: util_ds_buf, and set properties
   set util_ds_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 util_ds_buf ]
@@ -793,66 +765,33 @@ proc create_root_design { parentCell } {
    CONFIG.CONST_WIDTH {31} \
  ] $xlconstant_0
 
-  # Create instance: xlconstant_1, and set properties
-  set xlconstant_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_1 ]
-
-  # Create instance: xlconstant_rst_0, and set properties
-  set xlconstant_rst_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 xlconstant_rst_0 ]
-  set_property -dict [ list \
-   CONFIG.CONST_VAL {0} \
- ] $xlconstant_rst_0
-
-  # Create instance: xlslice_0, and set properties
-  set xlslice_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlslice:1.0 xlslice_0 ]
-  set_property -dict [ list \
-   CONFIG.DIN_FROM {0} \
-   CONFIG.DIN_TO {0} \
-   CONFIG.DIN_WIDTH {16} \
- ] $xlslice_0
-
   # Create interface connections
   connect_bd_intf_net -intf_net axi_iic_0_IIC [get_bd_intf_ports IIC_0] [get_bd_intf_pins mb/IIC_0]
   connect_bd_intf_net -intf_net axi_smc_M00_AXI [get_bd_intf_pins axi_smc/M00_AXI] [get_bd_intf_pins mig_7series_0/S_AXI]
   connect_bd_intf_net -intf_net axi_uartlite_0_UART [get_bd_intf_ports UART_0] [get_bd_intf_pins mb/UART_0]
   connect_bd_intf_net -intf_net diff_clock_rtl_0_1 [get_bd_intf_ports pcie_clk] [get_bd_intf_pins util_ds_buf/CLK_IN_D]
-  connect_bd_intf_net -intf_net gig_ethernet_pcs_pma_0_sfp [get_bd_intf_ports amc_port0] [get_bd_intf_pins gig_ethernet_pcs_pma_0/sfp]
-  connect_bd_intf_net -intf_net gigeth_gtrefclk_1 [get_bd_intf_ports gigeth_gtrefclk] [get_bd_intf_pins gig_ethernet_pcs_pma_0/gtrefclk_in]
   connect_bd_intf_net -intf_net mig_7series_0_DDR3 [get_bd_intf_ports DDR3_0] [get_bd_intf_pins mig_7series_0/DDR3]
-  connect_bd_intf_net -intf_net tck7_udp_beacon_top_0_GMII [get_bd_intf_pins gig_ethernet_pcs_pma_0/gmii_pcs_pma] [get_bd_intf_pins tck7_udp_beacon_top_0/GMII]
   connect_bd_intf_net -intf_net xdma_0_M_AXI [get_bd_intf_pins axi_smc/S00_AXI] [get_bd_intf_pins xdma_0/M_AXI]
   connect_bd_intf_net -intf_net xdma_0_M_AXI_LITE [get_bd_intf_pins xdma_0/M_AXI_LITE] [get_bd_intf_pins xdma_0_axi_periph/S00_AXI]
   connect_bd_intf_net -intf_net xdma_0_axi_periph_M00_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins xdma_0_axi_periph/M00_AXI]
   connect_bd_intf_net -intf_net xdma_0_pcie_mgt [get_bd_intf_ports pcie_7x_mgt_rtl_0] [get_bd_intf_pins xdma_0/pcie_mgt]
 
   # Create port connections
-  connect_bd_net -net GTREFCLK0N_I_0_1 [get_bd_ports SFP_GTREFCLK0N_I_0] [get_bd_pins tck7_sfp_ibert_0/GTREFCLK0N_I]
-  connect_bd_net -net GTREFCLK0P_I_0_1 [get_bd_ports SFP_GTREFCLK0P_I_0] [get_bd_pins tck7_sfp_ibert_0/GTREFCLK0P_I]
-  connect_bd_net -net GTREFCLK1N_I_0_1 [get_bd_ports SFP_GTREFCLK1N_I_0] [get_bd_pins tck7_sfp_ibert_0/GTREFCLK1N_I]
-  connect_bd_net -net GTREFCLK1P_I_0_1 [get_bd_ports SFP_GTREFCLK1P_I_0] [get_bd_pins tck7_sfp_ibert_0/GTREFCLK1P_I]
-  connect_bd_net -net RXN_I_0_1 [get_bd_ports SFP_RXN_I_0] [get_bd_pins tck7_sfp_ibert_0/RXN_I]
-  connect_bd_net -net RXP_I_0_1 [get_bd_ports SFP_RXP_I_0] [get_bd_pins tck7_sfp_ibert_0/RXP_I]
-  connect_bd_net -net clk_in1_0_1 [get_bd_ports clk_50] [get_bd_pins clk_wiz_0/clk_in1] [get_bd_pins tck7_sfp_ibert_0/SYSCLKP_I]
+  connect_bd_net -net clk_50_1 [get_bd_ports clk_50] [get_bd_pins clk_wiz_0/clk_in1]
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins mig_7series_0/clk_ref_i]
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins mig_7series_0/sys_clk_i]
-  connect_bd_net -net gig_ethernet_pcs_pma_0_status_vector [get_bd_pins gig_ethernet_pcs_pma_0/status_vector] [get_bd_pins xlslice_0/Din]
-  connect_bd_net -net gig_ethernet_pcs_pma_0_userclk2_out [get_bd_pins gig_ethernet_pcs_pma_0/userclk2_out] [get_bd_pins tck7_udp_beacon_top_0/clk]
-  connect_bd_net -net microblaze_0_Clk [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins gig_ethernet_pcs_pma_0/independent_clock_bufg] [get_bd_pins mb/s_axi_aclk]
+  connect_bd_net -net microblaze_0_Clk [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins mb/s_axi_aclk]
   connect_bd_net -net mig_7series_0_init_calib_complete [get_bd_pins mig_7series_0/init_calib_complete] [get_bd_pins xlconcat_0/In0]
   connect_bd_net -net mig_7series_0_mmcm_locked [get_bd_pins mig_7series_0/mmcm_locked] [get_bd_pins rst_mig_7series_0_133M/dcm_locked]
   connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins axi_smc/aclk1] [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins rst_mig_7series_0_133M/slowest_sync_clk]
   connect_bd_net -net mig_7series_0_ui_clk_sync_rst [get_bd_pins mig_7series_0/ui_clk_sync_rst] [get_bd_pins rst_mig_7series_0_133M/aux_reset_in]
   connect_bd_net -net rst_mig_7series_0_133M_peripheral_aresetn [get_bd_pins axi_smc/aresetn] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins rst_mig_7series_0_133M/peripheral_aresetn]
   connect_bd_net -net sys_rst_0_1 [get_bd_ports fpga_reset_n] [get_bd_pins mb/fpga_reset_n] [get_bd_pins mig_7series_0/sys_rst] [get_bd_pins rst_mig_7series_0_133M/ext_reset_in] [get_bd_pins xdma_0/sys_rst_n]
-  connect_bd_net -net tck7_sfp_ibert_0_TXN_O [get_bd_ports SFP_TXN_O_0] [get_bd_pins tck7_sfp_ibert_0/TXN_O]
-  connect_bd_net -net tck7_sfp_ibert_0_TXP_O [get_bd_ports SFP_TXP_O_0] [get_bd_pins tck7_sfp_ibert_0/TXP_O]
   connect_bd_net -net util_ds_buf_IBUF_OUT [get_bd_pins util_ds_buf/IBUF_OUT] [get_bd_pins xdma_0/sys_clk]
   connect_bd_net -net xdma_0_axi_aclk [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_smc/aclk] [get_bd_pins xdma_0/axi_aclk] [get_bd_pins xdma_0_axi_periph/ACLK] [get_bd_pins xdma_0_axi_periph/M00_ACLK] [get_bd_pins xdma_0_axi_periph/S00_ACLK]
   connect_bd_net -net xdma_0_axi_aresetn [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins xdma_0/axi_aresetn] [get_bd_pins xdma_0_axi_periph/ARESETN] [get_bd_pins xdma_0_axi_periph/M00_ARESETN] [get_bd_pins xdma_0_axi_periph/S00_ARESETN]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins axi_gpio_0/gpio_io_i] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconcat_0/In1] [get_bd_pins xlconstant_0/dout]
-  connect_bd_net -net xlconstant_1_dout [get_bd_pins gig_ethernet_pcs_pma_0/signal_detect] [get_bd_pins xlconstant_1/dout]
-  connect_bd_net -net xlconstant_rst_0_dout [get_bd_pins gig_ethernet_pcs_pma_0/reset] [get_bd_pins xlconstant_rst_0/dout]
-  connect_bd_net -net xlslice_0_Dout [get_bd_pins tck7_udp_beacon_top_0/resetn] [get_bd_pins xlslice_0/Dout]
 
   # Create address segments
   create_bd_addr_seg -range 0x00001000 -offset 0x00000000 [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
@@ -870,79 +809,47 @@ proc create_root_design { parentCell } {
 #  -string -flagsOSRD
 preplace port DDR3_0 -pg 1 -y 410 -defaultsOSRD
 preplace port UART_0 -pg 1 -y 570 -defaultsOSRD
-preplace port gigeth_gtrefclk -pg 1 -y 1080 -defaultsOSRD
 preplace port fpga_reset_n -pg 1 -y 180 -defaultsOSRD
-preplace port clk_50 -pg 1 -y 930 -defaultsOSRD
+preplace port clk_50 -pg 1 -y 760 -defaultsOSRD
 preplace port pcie_clk -pg 1 -y 120 -defaultsOSRD
 preplace port pcie_7x_mgt_rtl_0 -pg 1 -y 90 -defaultsOSRD
 preplace port IIC_0 -pg 1 -y 550 -defaultsOSRD
-preplace port amc_port0 -pg 1 -y 980 -defaultsOSRD
-preplace portBus SFP_TXP_O_0 -pg 1 -y 880 -defaultsOSRD
-preplace portBus SFP_GTREFCLK1N_I_0 -pg 1 -y 910 -defaultsOSRD
-preplace portBus SFP_GTREFCLK0N_I_0 -pg 1 -y 870 -defaultsOSRD
-preplace portBus SFP_TXN_O_0 -pg 1 -y 860 -defaultsOSRD
-preplace portBus SFP_GTREFCLK1P_I_0 -pg 1 -y 890 -defaultsOSRD
-preplace portBus SFP_GTREFCLK0P_I_0 -pg 1 -y 850 -defaultsOSRD
-preplace portBus SFP_RXP_I_0 -pg 1 -y 830 -defaultsOSRD
-preplace portBus SFP_RXN_I_0 -pg 1 -y 810 -defaultsOSRD
-preplace inst xlslice_0 -pg 1 -lvl 3 -y 1030 -defaultsOSRD
-preplace inst tck7_sfp_ibert_0 -pg 1 -lvl 1 -y 870 -defaultsOSRD
 preplace inst xlconstant_0 -pg 1 -lvl 4 -y 130 -defaultsOSRD
 preplace inst mig_7series_0 -pg 1 -lvl 4 -y 450 -defaultsOSRD
-preplace inst xlconstant_1 -pg 1 -lvl 4 -y 1240 -defaultsOSRD
 preplace inst axi_smc -pg 1 -lvl 3 -y 410 -defaultsOSRD
 preplace inst mb -pg 1 -lvl 5 -y 560 -defaultsOSRD
-preplace inst xdma_0_axi_periph -pg 1 -lvl 3 -y 220 -defaultsOSRD
-preplace inst axi_gpio_0 -pg 1 -lvl 4 -y 250 -defaultsOSRD
 preplace inst xlconcat_0 -pg 1 -lvl 5 -y 150 -defaultsOSRD
+preplace inst xdma_0_axi_periph -pg 1 -lvl 3 -y 220 -defaultsOSRD
 preplace inst rst_mig_7series_0_133M -pg 1 -lvl 2 -y 670 -defaultsOSRD
+preplace inst axi_gpio_0 -pg 1 -lvl 4 -y 250 -defaultsOSRD
 preplace inst util_ds_buf -pg 1 -lvl 1 -y 120 -defaultsOSRD
 preplace inst xdma_0 -pg 1 -lvl 2 -y 130 -defaultsOSRD
-preplace inst gig_ethernet_pcs_pma_0 -pg 1 -lvl 5 -y 1110 -defaultsOSRD
 preplace inst clk_wiz_0 -pg 1 -lvl 3 -y 760 -defaultsOSRD
-preplace inst tck7_udp_beacon_top_0 -pg 1 -lvl 4 -y 1010 -defaultsOSRD
-preplace inst xlconstant_rst_0 -pg 1 -lvl 4 -y 1140 -defaultsOSRD
-preplace netloc gig_ethernet_pcs_pma_0_sfp 1 5 1 NJ
-preplace netloc xlconstant_rst_0_dout 1 4 1 NJ
-preplace netloc xlconstant_1_dout 1 4 1 1380J
-preplace netloc mig_7series_0_mmcm_locked 1 1 4 330 560 NJ 560 NJ 560 1360
-preplace netloc tck7_udp_beacon_top_0_GMII 1 4 1 1380
-preplace netloc GTREFCLK0P_I_0_1 1 0 1 NJ
+preplace netloc mig_7series_0_mmcm_locked 1 1 4 330 550 NJ 550 NJ 550 1360
 preplace netloc mig_7series_0_DDR3 1 4 2 NJ 410 NJ
 preplace netloc util_ds_buf_IBUF_OUT 1 1 1 NJ
 preplace netloc mig_7series_0_init_calib_complete 1 4 1 1390
-preplace netloc GTREFCLK0N_I_0_1 1 0 1 NJ
 preplace netloc microblaze_0_Clk 1 3 2 N 780 1400
 preplace netloc axi_smc_M00_AXI 1 3 1 N
-preplace netloc xdma_0_axi_aclk 1 2 2 720 100 1040
-preplace netloc tck7_sfp_ibert_0_TXN_O 1 1 5 NJ 860 NJ 860 NJ 860 NJ 860 NJ
+preplace netloc clk_50_1 1 0 3 NJ 760 340J 770 720
+preplace netloc xdma_0_axi_aclk 1 2 2 730 90 1070
 preplace netloc diff_clock_rtl_0_1 1 0 1 NJ
-preplace netloc xdma_0_axi_aresetn 1 2 2 730 90 1060
-preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 700 500 1040J
-preplace netloc mig_7series_0_ui_clk 1 1 4 340 550 720 580 NJ 580 1370
-preplace netloc RXN_I_0_1 1 0 1 NJ
-preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 1030
+preplace netloc xdma_0_axi_aresetn 1 2 2 740 100 1040
+preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 710 500 1060J
+preplace netloc mig_7series_0_ui_clk 1 1 4 340 560 730 580 NJ 580 1370
+preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 1050
 preplace netloc xlconstant_0_dout 1 4 1 1400J
-preplace netloc xlconcat_0_dout 1 4 2 NJ 260 1770
-preplace netloc gig_ethernet_pcs_pma_0_userclk2_out 1 3 3 1050 920 NJ 920 1760
-preplace netloc clk_wiz_0_clk_out1 1 3 1 1030
-preplace netloc clk_in1_0_1 1 0 3 20 750 340J 770 710J
-preplace netloc RXP_I_0_1 1 0 1 NJ
+preplace netloc xlconcat_0_dout 1 4 2 NJ 260 1710
+preplace netloc clk_wiz_0_clk_out1 1 3 1 1040
+preplace netloc xdma_0_M_AXI 1 2 1 720
 preplace netloc axi_uartlite_0_UART 1 5 1 NJ
 preplace netloc axi_iic_0_IIC 1 5 1 NJ
-preplace netloc xdma_0_M_AXI 1 2 1 710
-preplace netloc sys_rst_0_1 1 0 5 20J 190 320 540 NJ 540 1060 550 NJ
+preplace netloc sys_rst_0_1 1 0 5 20J 190 320 540 NJ 540 1050 560 1400J
 preplace netloc mig_7series_0_ui_clk_sync_rst 1 1 4 350 570 NJ 570 NJ 570 1380
-preplace netloc clk_wiz_0_clk_out2 1 3 1 1050
-preplace netloc xdma_0_pcie_mgt 1 2 4 700J 70 NJ 70 NJ 70 1770J
-preplace netloc tck7_sfp_ibert_0_TXP_O 1 1 5 NJ 880 NJ 880 NJ 880 NJ 880 NJ
-preplace netloc GTREFCLK1N_I_0_1 1 0 1 NJ
-preplace netloc gigeth_gtrefclk_1 1 0 5 20J 1090 NJ 1090 NJ 1090 1050J 1080 NJ
-preplace netloc xdma_0_M_AXI_LITE 1 2 1 690
-preplace netloc gig_ethernet_pcs_pma_0_status_vector 1 2 4 710 910 NJ 910 NJ 910 1770
-preplace netloc GTREFCLK1P_I_0_1 1 0 1 NJ
-preplace netloc xlslice_0_Dout 1 3 1 1040J
-levelinfo -pg 1 0 170 520 880 1220 1590 1810 -top -10 -bot 1300
+preplace netloc clk_wiz_0_clk_out2 1 3 1 1070
+preplace netloc xdma_0_pcie_mgt 1 2 4 710J 70 NJ 70 NJ 70 1710J
+preplace netloc xdma_0_M_AXI_LITE 1 2 1 700
+levelinfo -pg 1 0 170 530 890 1220 1590 1810 -top -20 -bot 1300
 ",
 }
 
