@@ -125,7 +125,6 @@ if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 xilinx.com:ip:axi_dma:7.1\
 xilinx.com:ip:axi_gpio:2.0\
-xilinx.com:ip:smartconnect:1.0\
 xilinx.com:ip:axi_traffic_gen:3.0\
 xilinx.com:ip:clk_wiz:6.0\
 xilinx.com:ip:mig_7series:4.1\
@@ -675,12 +674,12 @@ proc create_root_design { parentCell } {
    CONFIG.C_ALL_OUTPUTS {0} \
  ] $axi_gpio_0
 
-  # Create instance: axi_smc, and set properties
-  set axi_smc [ create_bd_cell -type ip -vlnv xilinx.com:ip:smartconnect:1.0 axi_smc ]
+  # Create instance: axi_interconnect_0, and set properties
+  set axi_interconnect_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 axi_interconnect_0 ]
   set_property -dict [ list \
-   CONFIG.NUM_CLKS {2} \
+   CONFIG.NUM_MI {1} \
    CONFIG.NUM_SI {2} \
- ] $axi_smc
+ ] $axi_interconnect_0
 
   # Create instance: axi_traffic_gen_0, and set properties
   set axi_traffic_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_traffic_gen:3.0 axi_traffic_gen_0 ]
@@ -733,13 +732,15 @@ proc create_root_design { parentCell } {
 
   set_property -dict [ list \
    CONFIG.BOARD_MIG_PARAM {Custom} \
-   CONFIG.MIG_DONT_TOUCH_PARAM {Custom} \
    CONFIG.RESET_BOARD_INTERFACE {Custom} \
    CONFIG.XML_INPUT_FILE {mig_b.prj} \
  ] $mig_7series_0
 
   # Create instance: rst_mig_7series_0_133M, and set properties
   set rst_mig_7series_0_133M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_mig_7series_0_133M ]
+
+  # Create instance: rst_xdma_0_250M, and set properties
+  set rst_xdma_0_250M [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 rst_xdma_0_250M ]
 
   # Create instance: system_ila_0, and set properties
   set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
@@ -820,13 +821,13 @@ proc create_root_design { parentCell } {
  ] $xlconstant_0
 
   # Create interface connections
-  connect_bd_intf_net -intf_net axi_dma_0_M_AXI_S2MM [get_bd_intf_pins axi_dma_0/M_AXI_S2MM] [get_bd_intf_pins axi_smc/S01_AXI]
+  connect_bd_intf_net -intf_net axi_dma_0_M_AXI_S2MM [get_bd_intf_pins axi_dma_0/M_AXI_S2MM] [get_bd_intf_pins axi_interconnect_0/S01_AXI]
 connect_bd_intf_net -intf_net [get_bd_intf_nets axi_dma_0_M_AXI_S2MM] [get_bd_intf_pins axi_dma_0/M_AXI_S2MM] [get_bd_intf_pins system_ila_0/SLOT_0_AXI]
   set_property -dict [ list \
 HDL_ATTRIBUTE.DEBUG {true} \
  ] [get_bd_intf_nets axi_dma_0_M_AXI_S2MM]
   connect_bd_intf_net -intf_net axi_iic_0_IIC [get_bd_intf_ports IIC_0] [get_bd_intf_pins mb/IIC_0]
-  connect_bd_intf_net -intf_net axi_smc_M00_AXI [get_bd_intf_pins axi_smc/M00_AXI] [get_bd_intf_pins mig_7series_0/S_AXI]
+  connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins axi_interconnect_0/M00_AXI] [get_bd_intf_pins mig_7series_0/S_AXI]
   connect_bd_intf_net -intf_net axi_traffic_gen_0_M_AXIS_MASTER [get_bd_intf_pins axi_dma_0/S_AXIS_S2MM] [get_bd_intf_pins axi_traffic_gen_0/M_AXIS_MASTER]
 connect_bd_intf_net -intf_net [get_bd_intf_nets axi_traffic_gen_0_M_AXIS_MASTER] [get_bd_intf_pins axi_traffic_gen_0/M_AXIS_MASTER] [get_bd_intf_pins system_ila_0/SLOT_1_AXIS]
   set_property -dict [ list \
@@ -835,7 +836,7 @@ HDL_ATTRIBUTE.DEBUG {true} \
   connect_bd_intf_net -intf_net axi_uartlite_0_UART [get_bd_intf_ports UART_0] [get_bd_intf_pins mb/UART_0]
   connect_bd_intf_net -intf_net diff_clock_rtl_0_1 [get_bd_intf_ports pcie_clk] [get_bd_intf_pins util_ds_buf/CLK_IN_D]
   connect_bd_intf_net -intf_net mig_7series_0_DDR3 [get_bd_intf_ports DDR3_0] [get_bd_intf_pins mig_7series_0/DDR3]
-  connect_bd_intf_net -intf_net xdma_0_M_AXI [get_bd_intf_pins axi_smc/S00_AXI] [get_bd_intf_pins xdma_0/M_AXI]
+  connect_bd_intf_net -intf_net xdma_0_M_AXI [get_bd_intf_pins axi_interconnect_0/S00_AXI] [get_bd_intf_pins xdma_0/M_AXI]
   connect_bd_intf_net -intf_net xdma_0_M_AXI_LITE [get_bd_intf_pins xdma_0/M_AXI_LITE] [get_bd_intf_pins xdma_0_axi_periph/S00_AXI]
   connect_bd_intf_net -intf_net xdma_0_axi_periph_M00_AXI [get_bd_intf_pins axi_gpio_0/S_AXI] [get_bd_intf_pins xdma_0_axi_periph/M00_AXI]
   connect_bd_intf_net -intf_net xdma_0_axi_periph_M01_AXI [get_bd_intf_pins axi_dma_0/S_AXI_LITE] [get_bd_intf_pins xdma_0_axi_periph/M01_AXI]
@@ -849,13 +850,14 @@ HDL_ATTRIBUTE.DEBUG {true} \
   connect_bd_net -net microblaze_0_Clk [get_bd_pins clk_wiz_0/clk_out3] [get_bd_pins mb/s_axi_aclk]
   connect_bd_net -net mig_7series_0_init_calib_complete [get_bd_pins mig_7series_0/init_calib_complete] [get_bd_pins xlconcat_0/In0]
   connect_bd_net -net mig_7series_0_mmcm_locked [get_bd_pins mig_7series_0/mmcm_locked] [get_bd_pins rst_mig_7series_0_133M/dcm_locked]
-  connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins axi_smc/aclk1] [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins rst_mig_7series_0_133M/slowest_sync_clk]
+  connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins rst_mig_7series_0_133M/slowest_sync_clk]
   connect_bd_net -net mig_7series_0_ui_clk_sync_rst [get_bd_pins mig_7series_0/ui_clk_sync_rst] [get_bd_pins rst_mig_7series_0_133M/aux_reset_in]
-  connect_bd_net -net rst_mig_7series_0_133M_peripheral_aresetn [get_bd_pins axi_smc/aresetn] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins rst_mig_7series_0_133M/peripheral_aresetn]
+  connect_bd_net -net rst_mig_7series_0_133M_peripheral_aresetn [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins rst_mig_7series_0_133M/peripheral_aresetn]
+  connect_bd_net -net rst_xdma_0_250M_interconnect_aresetn [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins rst_xdma_0_250M/interconnect_aresetn]
   connect_bd_net -net sys_rst_0_1 [get_bd_ports fpga_reset_n] [get_bd_pins mb/fpga_reset_n] [get_bd_pins mig_7series_0/sys_rst] [get_bd_pins rst_mig_7series_0_133M/ext_reset_in] [get_bd_pins xdma_0/sys_rst_n]
   connect_bd_net -net util_ds_buf_IBUF_OUT [get_bd_pins util_ds_buf/IBUF_OUT] [get_bd_pins xdma_0/sys_clk]
-  connect_bd_net -net xdma_0_axi_aclk [get_bd_pins axi_dma_0/m_axi_s2mm_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_smc/aclk] [get_bd_pins axi_traffic_gen_0/s_axi_aclk] [get_bd_pins system_ila_0/clk] [get_bd_pins xdma_0/axi_aclk] [get_bd_pins xdma_0_axi_periph/ACLK] [get_bd_pins xdma_0_axi_periph/M00_ACLK] [get_bd_pins xdma_0_axi_periph/M01_ACLK] [get_bd_pins xdma_0_axi_periph/M02_ACLK] [get_bd_pins xdma_0_axi_periph/S00_ACLK]
-  connect_bd_net -net xdma_0_axi_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_traffic_gen_0/s_axi_aresetn] [get_bd_pins system_ila_0/resetn] [get_bd_pins xdma_0/axi_aresetn] [get_bd_pins xdma_0_axi_periph/ARESETN] [get_bd_pins xdma_0_axi_periph/M00_ARESETN] [get_bd_pins xdma_0_axi_periph/M01_ARESETN] [get_bd_pins xdma_0_axi_periph/M02_ARESETN] [get_bd_pins xdma_0_axi_periph/S00_ARESETN]
+  connect_bd_net -net xdma_0_axi_aclk [get_bd_pins axi_dma_0/m_axi_s2mm_aclk] [get_bd_pins axi_dma_0/s_axi_lite_aclk] [get_bd_pins axi_gpio_0/s_axi_aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_interconnect_0/S01_ACLK] [get_bd_pins axi_traffic_gen_0/s_axi_aclk] [get_bd_pins rst_xdma_0_250M/slowest_sync_clk] [get_bd_pins system_ila_0/clk] [get_bd_pins xdma_0/axi_aclk] [get_bd_pins xdma_0_axi_periph/ACLK] [get_bd_pins xdma_0_axi_periph/M00_ACLK] [get_bd_pins xdma_0_axi_periph/M01_ACLK] [get_bd_pins xdma_0_axi_periph/M02_ACLK] [get_bd_pins xdma_0_axi_periph/S00_ACLK]
+  connect_bd_net -net xdma_0_axi_aresetn [get_bd_pins axi_dma_0/axi_resetn] [get_bd_pins axi_gpio_0/s_axi_aresetn] [get_bd_pins axi_interconnect_0/S00_ARESETN] [get_bd_pins axi_interconnect_0/S01_ARESETN] [get_bd_pins axi_traffic_gen_0/s_axi_aresetn] [get_bd_pins rst_xdma_0_250M/ext_reset_in] [get_bd_pins system_ila_0/resetn] [get_bd_pins xdma_0/axi_aresetn] [get_bd_pins xdma_0_axi_periph/ARESETN] [get_bd_pins xdma_0_axi_periph/M00_ARESETN] [get_bd_pins xdma_0_axi_periph/M01_ARESETN] [get_bd_pins xdma_0_axi_periph/M02_ARESETN] [get_bd_pins xdma_0_axi_periph/S00_ARESETN]
   connect_bd_net -net xlconcat_0_dout [get_bd_pins axi_gpio_0/gpio_io_i] [get_bd_pins xlconcat_0/dout]
   connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconcat_0/In1] [get_bd_pins xlconstant_0/dout]
 
@@ -884,48 +886,50 @@ preplace port pcie_clk -pg 1 -y 130 -defaultsOSRD
 preplace port pcie_7x_mgt_rtl_0 -pg 1 -y 100 -defaultsOSRD
 preplace port IIC_0 -pg 1 -y 600 -defaultsOSRD
 preplace inst axi_dma_0 -pg 1 -lvl 2 -y 750 -defaultsOSRD
+preplace inst rst_xdma_0_250M -pg 1 -lvl 3 -y 1150 -defaultsOSRD
 preplace inst xlconstant_0 -pg 1 -lvl 4 -y 160 -defaultsOSRD
 preplace inst mig_7series_0 -pg 1 -lvl 4 -y 490 -defaultsOSRD
 preplace inst axi_traffic_gen_0 -pg 1 -lvl 1 -y 760 -defaultsOSRD
-preplace inst axi_smc -pg 1 -lvl 3 -y 500 -defaultsOSRD
-preplace inst mb -pg 1 -lvl 5 -y 610 -defaultsOSRD
+preplace inst mb -pg 1 -lvl 5 -y 620 -defaultsOSRD
 preplace inst xlconcat_0 -pg 1 -lvl 5 -y 170 -defaultsOSRD
 preplace inst xdma_0_axi_periph -pg 1 -lvl 3 -y 260 -defaultsOSRD
 preplace inst rst_mig_7series_0_133M -pg 1 -lvl 2 -y 500 -defaultsOSRD
 preplace inst axi_gpio_0 -pg 1 -lvl 4 -y 280 -defaultsOSRD
 preplace inst util_ds_buf -pg 1 -lvl 1 -y 130 -defaultsOSRD
 preplace inst xdma_0 -pg 1 -lvl 2 -y 140 -defaultsOSRD
+preplace inst axi_interconnect_0 -pg 1 -lvl 3 -y 560 -defaultsOSRD
 preplace inst system_ila_0 -pg 1 -lvl 3 -y 980 -defaultsOSRD
 preplace inst clk_wiz_0 -pg 1 -lvl 3 -y 820 -defaultsOSRD
-preplace netloc mig_7series_0_mmcm_locked 1 1 4 270 300 690J 10 NJ 10 1520
-preplace netloc axi_traffic_gen_0_M_AXIS_MASTER 1 1 2 280 650 740
-preplace netloc xdma_0_axi_periph_M01_AXI 1 1 3 290J 320 780J 80 1160
+preplace netloc mig_7series_0_mmcm_locked 1 1 4 280 300 690J 20 NJ 20 1560
+preplace netloc axi_traffic_gen_0_M_AXIS_MASTER 1 1 2 270 970 N
 preplace netloc mig_7series_0_DDR3 1 4 2 NJ 450 NJ
+preplace netloc xdma_0_axi_periph_M01_AXI 1 1 3 290J 650 690J 710 1180
 preplace netloc util_ds_buf_IBUF_OUT 1 1 1 NJ
-preplace netloc mig_7series_0_init_calib_complete 1 4 1 1540
-preplace netloc microblaze_0_Clk 1 3 2 1220 620 N
-preplace netloc axi_smc_M00_AXI 1 3 1 1160
-preplace netloc clk_50_1 1 0 3 -50J 860 NJ 860 810
-preplace netloc xdma_0_axi_aclk 1 0 4 -50 650 260 630 800 60 1220
+preplace netloc mig_7series_0_init_calib_complete 1 4 1 1570
+preplace netloc microblaze_0_Clk 1 3 2 N 840 1550
+preplace netloc clk_50_1 1 0 3 -60J 980 NJ 980 770
+preplace netloc xdma_0_axi_aclk 1 0 4 -50 660 260 630 750 70 1230
 preplace netloc diff_clock_rtl_0_1 1 0 1 NJ
-preplace netloc xdma_0_axi_aresetn 1 0 4 -40 660 270 640 750 70 1180
-preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 730 40 1200J
-preplace netloc mig_7series_0_ui_clk 1 1 4 310 400 790 30 NJ 30 1500
-preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 1170
-preplace netloc xlconstant_0_dout 1 4 1 1530J
-preplace netloc xlconcat_0_dout 1 4 2 NJ 290 1780
-preplace netloc clk_wiz_0_clk_out1 1 3 1 1180
-preplace netloc axi_dma_0_M_AXI_S2MM 1 2 1 820J
-preplace netloc xdma_0_M_AXI 1 2 1 770
-preplace netloc axi_uartlite_0_UART 1 5 1 NJ
-preplace netloc axi_iic_0_IIC 1 5 1 NJ
-preplace netloc sys_rst_0_1 1 0 5 NJ 200 260 290 710J 50 1190 390 1530J
-preplace netloc mig_7series_0_ui_clk_sync_rst 1 1 4 300 310 700J 20 NJ 20 1510
-preplace netloc clk_wiz_0_clk_out2 1 3 1 1210
-preplace netloc xdma_0_pcie_mgt 1 2 4 720J 90 1210J 100 NJ 100 NJ
-preplace netloc xdma_0_M_AXI_LITE 1 2 1 760
-preplace netloc xdma_0_axi_periph_M02_AXI 1 0 4 -60 280 NJ 280 740J 100 1150
-levelinfo -pg 1 -80 110 520 1000 1360 1660 1800 -top 0 -bot 1070
+preplace netloc rst_xdma_0_250M_interconnect_aresetn 1 2 2 790 80 1190
+preplace netloc xdma_0_axi_aresetn 1 0 4 -50 990 290 990 730 90 1200
+preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 770 50 1240J
+preplace netloc mig_7series_0_ui_clk 1 1 4 290 400 760 40 NJ 40 1530
+preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 1220
+preplace netloc xlconstant_0_dout 1 4 1 1540J
+preplace netloc xlconcat_0_dout 1 4 2 NJ 290 1830
+preplace netloc clk_wiz_0_clk_out1 1 3 1 1220
+preplace netloc xdma_0_M_AXI 1 2 1 710
+preplace netloc axi_interconnect_0_M00_AXI 1 3 1 1200
+preplace netloc axi_uartlite_0_UART 1 5 1 1830J
+preplace netloc axi_iic_0_IIC 1 5 1 1830J
+preplace netloc axi_dma_0_M_AXI_S2MM 1 2 1 780J
+preplace netloc sys_rst_0_1 1 0 5 NJ 200 260 280 720J 60 1210 610 NJ
+preplace netloc mig_7series_0_ui_clk_sync_rst 1 1 4 270 290 700J 30 NJ 30 1550
+preplace netloc clk_wiz_0_clk_out2 1 3 1 1250
+preplace netloc xdma_0_pcie_mgt 1 2 4 NJ 100 NJ 100 NJ 100 NJ
+preplace netloc xdma_0_M_AXI_LITE 1 2 1 740
+preplace netloc xdma_0_axi_periph_M02_AXI 1 0 4 -60 640 NJ 640 710J 720 1170
+levelinfo -pg 1 -80 110 520 1000 1390 1710 1880 -top 0 -bot 1250
 ",
 }
 
