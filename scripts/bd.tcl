@@ -43,7 +43,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
-   create_project project_1 myproj -part xc7k420tffg901-2
+   create_project project_1 myproj -part xc7k355tffg901-2
 }
 
 
@@ -188,7 +188,7 @@ proc write_mig_file_system_mig_7series_0_0 { str_mig_prj_filepath } {
    puts $mig_prj_file {    <DataDepth_En>1024</DataDepth_En>}
    puts $mig_prj_file {    <LowPower_En>ON</LowPower_En>}
    puts $mig_prj_file {    <XADC_En>Enabled</XADC_En>}
-   puts $mig_prj_file {    <TargetFPGA>xc7k420t-ffg901/-2</TargetFPGA>}
+   puts $mig_prj_file {    <TargetFPGA>xc7k355t-ffg901/-2</TargetFPGA>}
    puts $mig_prj_file {    <Version>4.0</Version>}
    puts $mig_prj_file {    <SystemClock>No Buffer</SystemClock>}
    puts $mig_prj_file {    <ReferenceClock>No Buffer</ReferenceClock>}
