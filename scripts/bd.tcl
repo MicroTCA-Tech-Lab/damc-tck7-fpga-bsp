@@ -685,6 +685,7 @@ proc create_root_design { parentCell } {
   set axi_traffic_gen_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_traffic_gen:3.0 axi_traffic_gen_0 ]
   set_property -dict [ list \
    CONFIG.C_ATG_MODE {AXI4-Stream} \
+   CONFIG.C_AXIS_SPARSE_EN {false} \
    CONFIG.C_AXIS_TDEST_WIDTH {0} \
    CONFIG.C_AXIS_TID_WIDTH {0} \
    CONFIG.C_AXIS_TUSER_WIDTH {0} \
@@ -844,6 +845,7 @@ HDL_ATTRIBUTE.DEBUG {true} \
   connect_bd_intf_net -intf_net xdma_0_pcie_mgt [get_bd_intf_ports pcie_7x_mgt_rtl_0] [get_bd_intf_pins xdma_0/pcie_mgt]
 
   # Create port connections
+  connect_bd_net -net axi_dma_0_s2mm_introut [get_bd_pins axi_dma_0/s2mm_introut] [get_bd_pins xdma_0/usr_irq_req]
   connect_bd_net -net clk_50_1 [get_bd_ports clk_50] [get_bd_pins clk_wiz_0/clk_in1]
   connect_bd_net -net clk_wiz_0_clk_out1 [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins mig_7series_0/clk_ref_i]
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins mig_7series_0/sys_clk_i]
@@ -876,60 +878,62 @@ HDL_ATTRIBUTE.DEBUG {true} \
   # Perform GUI Layout
   regenerate_bd_layout -layout_string {
    ExpandedHierarchyInLayout: "",
+   PinnedBlocks: "/xdma_0|/util_ds_buf|",
    guistr: "# # String gsaved with Nlview 6.8.5  2018-01-30 bk=1.4354 VDI=40 GEI=35 GUI=JA:1.6 non-TLS
 #  -string -flagsOSRD
 preplace port DDR3_0 -pg 1 -y 450 -defaultsOSRD
-preplace port UART_0 -pg 1 -y 620 -defaultsOSRD
+preplace port UART_0 -pg 1 -y 630 -defaultsOSRD
 preplace port fpga_reset_n -pg 1 -y 200 -defaultsOSRD
-preplace port clk_50 -pg 1 -y 810 -defaultsOSRD
+preplace port clk_50 -pg 1 -y 430 -defaultsOSRD
 preplace port pcie_clk -pg 1 -y 130 -defaultsOSRD
 preplace port pcie_7x_mgt_rtl_0 -pg 1 -y 100 -defaultsOSRD
-preplace port IIC_0 -pg 1 -y 600 -defaultsOSRD
-preplace inst axi_dma_0 -pg 1 -lvl 2 -y 750 -defaultsOSRD
-preplace inst rst_xdma_0_250M -pg 1 -lvl 3 -y 1150 -defaultsOSRD
-preplace inst xlconstant_0 -pg 1 -lvl 4 -y 160 -defaultsOSRD
+preplace port IIC_0 -pg 1 -y 610 -defaultsOSRD
+preplace inst axi_dma_0 -pg 1 -lvl 2 -y 910 -defaultsOSRD
+preplace inst rst_xdma_0_250M -pg 1 -lvl 2 -y 370 -defaultsOSRD
+preplace inst xlconstant_0 -pg 1 -lvl 4 -y 180 -defaultsOSRD
 preplace inst mig_7series_0 -pg 1 -lvl 4 -y 490 -defaultsOSRD
-preplace inst axi_traffic_gen_0 -pg 1 -lvl 1 -y 760 -defaultsOSRD
+preplace inst axi_traffic_gen_0 -pg 1 -lvl 1 -y 890 -defaultsOSRD
 preplace inst mb -pg 1 -lvl 5 -y 620 -defaultsOSRD
 preplace inst xlconcat_0 -pg 1 -lvl 5 -y 170 -defaultsOSRD
 preplace inst xdma_0_axi_periph -pg 1 -lvl 3 -y 260 -defaultsOSRD
-preplace inst rst_mig_7series_0_133M -pg 1 -lvl 2 -y 500 -defaultsOSRD
-preplace inst axi_gpio_0 -pg 1 -lvl 4 -y 280 -defaultsOSRD
+preplace inst rst_mig_7series_0_133M -pg 1 -lvl 2 -y 550 -defaultsOSRD
+preplace inst axi_gpio_0 -pg 1 -lvl 4 -y 300 -defaultsOSRD
 preplace inst util_ds_buf -pg 1 -lvl 1 -y 130 -defaultsOSRD
 preplace inst xdma_0 -pg 1 -lvl 2 -y 140 -defaultsOSRD
 preplace inst axi_interconnect_0 -pg 1 -lvl 3 -y 560 -defaultsOSRD
 preplace inst system_ila_0 -pg 1 -lvl 3 -y 980 -defaultsOSRD
-preplace inst clk_wiz_0 -pg 1 -lvl 3 -y 820 -defaultsOSRD
-preplace netloc mig_7series_0_mmcm_locked 1 1 4 280 300 690J 20 NJ 20 1560
-preplace netloc axi_traffic_gen_0_M_AXIS_MASTER 1 1 2 270 970 N
+preplace inst clk_wiz_0 -pg 1 -lvl 1 -y 430 -defaultsOSRD
+preplace netloc mig_7series_0_mmcm_locked 1 1 4 340 710 NJ 710 NJ 710 1570
+preplace netloc axi_traffic_gen_0_M_AXIS_MASTER 1 1 2 320 810 800
 preplace netloc mig_7series_0_DDR3 1 4 2 NJ 450 NJ
-preplace netloc xdma_0_axi_periph_M01_AXI 1 1 3 290J 650 690J 710 1180
+preplace netloc xdma_0_axi_periph_M01_AXI 1 1 3 340J 790 NJ 790 1210
 preplace netloc util_ds_buf_IBUF_OUT 1 1 1 NJ
-preplace netloc mig_7series_0_init_calib_complete 1 4 1 1570
-preplace netloc microblaze_0_Clk 1 3 2 N 840 1550
-preplace netloc clk_50_1 1 0 3 -60J 980 NJ 980 770
-preplace netloc xdma_0_axi_aclk 1 0 4 -50 660 260 630 750 70 1230
+preplace netloc mig_7series_0_init_calib_complete 1 4 1 1590
+preplace netloc microblaze_0_Clk 1 1 4 250 720 N 720 1290 630 N
+preplace netloc clk_50_1 1 0 1 NJ
+preplace netloc xdma_0_axi_aclk 1 0 4 -90 780 270 800 820 60 1280
 preplace netloc diff_clock_rtl_0_1 1 0 1 NJ
-preplace netloc rst_xdma_0_250M_interconnect_aresetn 1 2 2 790 80 1190
-preplace netloc xdma_0_axi_aresetn 1 0 4 -50 990 290 990 730 90 1200
-preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 770 50 1240J
-preplace netloc mig_7series_0_ui_clk 1 1 4 290 400 760 40 NJ 40 1530
-preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 1220
-preplace netloc xlconstant_0_dout 1 4 1 1540J
-preplace netloc xlconcat_0_dout 1 4 2 NJ 290 1830
-preplace netloc clk_wiz_0_clk_out1 1 3 1 1220
-preplace netloc xdma_0_M_AXI 1 2 1 710
-preplace netloc axi_interconnect_0_M00_AXI 1 3 1 1200
-preplace netloc axi_uartlite_0_UART 1 5 1 1830J
-preplace netloc axi_iic_0_IIC 1 5 1 1830J
-preplace netloc axi_dma_0_M_AXI_S2MM 1 2 1 780J
-preplace netloc sys_rst_0_1 1 0 5 NJ 200 260 280 720J 60 1210 610 NJ
-preplace netloc mig_7series_0_ui_clk_sync_rst 1 1 4 270 290 700J 30 NJ 30 1550
-preplace netloc clk_wiz_0_clk_out2 1 3 1 1250
+preplace netloc rst_xdma_0_250M_interconnect_aresetn 1 2 1 800
+preplace netloc axi_dma_0_s2mm_introut 1 1 2 310 680 760
+preplace netloc xdma_0_axi_aresetn 1 0 4 -80 790 280 690 750 70 1260
+preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 780 90 1220J
+preplace netloc mig_7series_0_ui_clk 1 1 4 330 670 790 40 NJ 40 1570
+preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 1250
+preplace netloc xlconstant_0_dout 1 4 1 NJ
+preplace netloc xlconcat_0_dout 1 4 2 NJ 310 1840
+preplace netloc clk_wiz_0_clk_out1 1 1 3 300 660 810 80 1240
+preplace netloc axi_uartlite_0_UART 1 5 1 NJ
+preplace netloc axi_iic_0_IIC 1 5 1 NJ
+preplace netloc xdma_0_M_AXI 1 2 1 770
+preplace netloc axi_interconnect_0_M00_AXI 1 3 1 1230
+preplace netloc axi_dma_0_M_AXI_S2MM 1 2 1 830J
+preplace netloc sys_rst_0_1 1 0 5 NJ 200 260 730 NJ 730 1280 610 NJ
+preplace netloc mig_7series_0_ui_clk_sync_rst 1 1 4 320 740 NJ 740 NJ 740 1580
+preplace netloc clk_wiz_0_clk_out2 1 1 3 290 650 740 50 1270
 preplace netloc xdma_0_pcie_mgt 1 2 4 NJ 100 NJ 100 NJ 100 NJ
-preplace netloc xdma_0_M_AXI_LITE 1 2 1 740
-preplace netloc xdma_0_axi_periph_M02_AXI 1 0 4 -60 640 NJ 640 710J 720 1170
-levelinfo -pg 1 -80 110 520 1000 1390 1710 1880 -top 0 -bot 1250
+preplace netloc xdma_0_M_AXI_LITE 1 2 1 760
+preplace netloc xdma_0_axi_periph_M02_AXI 1 0 4 -100 750 NJ 750 NJ 750 1200
+levelinfo -pg 1 -120 80 550 1050 1430 1720 1880 -top 0 -bot 1250
 ",
 }
 
