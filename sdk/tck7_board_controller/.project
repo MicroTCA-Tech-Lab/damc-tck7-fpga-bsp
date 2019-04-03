@@ -3,7 +3,7 @@
 	<name>tck7_board_controller</name>
 	<comment></comment>
 	<projects>
-		<project>standalone_bsp_0</project>
+		<project>tck7_board_controller_bsp</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>
