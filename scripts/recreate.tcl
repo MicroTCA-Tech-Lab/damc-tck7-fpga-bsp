@@ -130,7 +130,7 @@ if { $::argc > 0 } {
 set orig_proj_dir "[file normalize "$origin_dir/../project"]"
 
 # Create project
-create_project ${_xil_proj_name_} . -part xc7k355tffg901-2
+create_project ${_xil_proj_name_} . -part xc7k420tffg901-2
 
 # Set the directory path for the new project
 set proj_dir [get_property directory [current_project]]
@@ -160,7 +160,7 @@ set_property -name "enable_vhdl_2008" -value "1" -objects $obj
 set_property -name "ip_cache_permissions" -value "read write" -objects $obj
 set_property -name "ip_output_repo" -value "$proj_dir/${_xil_proj_name_}.cache/ip" -objects $obj
 set_property -name "mem.enable_memory_map_generation" -value "1" -objects $obj
-set_property -name "part" -value "xc7k355tffg901-2" -objects $obj
+set_property -name "part" -value "xc7k420tffg901-2" -objects $obj
 set_property -name "sim.central_dir" -value "$proj_dir/${_xil_proj_name_}.ip_user_files" -objects $obj
 set_property -name "sim.ip.auto_export_scripts" -value "1" -objects $obj
 set_property -name "simulator_language" -value "Mixed" -objects $obj
@@ -230,7 +230,7 @@ set obj [get_filesets sim_1]
 
 # Create 'synth_1' run (if not found)
 if {[string equal [get_runs -quiet synth_1] ""]} {
-    create_run -name synth_1 -part xc7k355tffg901-2 -flow {Vivado Synthesis 2017} -strategy "Vivado Synthesis Defaults" -report_strategy {No Reports} -constrset constrs_1
+    create_run -name synth_1 -part xc7k420tffg901-2 -flow {Vivado Synthesis 2017} -strategy "Vivado Synthesis Defaults" -report_strategy {No Reports} -constrset constrs_1
 } else {
   set_property strategy "Vivado Synthesis Defaults" [get_runs synth_1]
   set_property flow "Vivado Synthesis 2017" [get_runs synth_1]
@@ -248,7 +248,7 @@ if { $obj != "" } {
 
 }
 set obj [get_runs synth_1]
-set_property -name "part" -value "xc7k355tffg901-2" -objects $obj
+set_property -name "part" -value "xc7k420tffg901-2" -objects $obj
 set_property -name "strategy" -value "Vivado Synthesis Defaults" -objects $obj
 
 # set the current synth run
@@ -256,7 +256,7 @@ current_run -synthesis [get_runs synth_1]
 
 # Create 'impl_1' run (if not found)
 if {[string equal [get_runs -quiet impl_1] ""]} {
-    create_run -name impl_1 -part xc7k355tffg901-2 -flow {Vivado Implementation 2017} -strategy "Vivado Implementation Defaults" -report_strategy {No Reports} -constrset constrs_1 -parent_run synth_1
+    create_run -name impl_1 -part xc7k420tffg901-2 -flow {Vivado Implementation 2017} -strategy "Vivado Implementation Defaults" -report_strategy {No Reports} -constrset constrs_1 -parent_run synth_1
 } else {
   set_property strategy "Vivado Implementation Defaults" [get_runs impl_1]
   set_property flow "Vivado Implementation 2017" [get_runs impl_1]
@@ -450,7 +450,7 @@ if { $obj != "" } {
 
 }
 set obj [get_runs impl_1]
-set_property -name "part" -value "xc7k355tffg901-2" -objects $obj
+set_property -name "part" -value "xc7k420tffg901-2" -objects $obj
 set_property -name "gen_full_bitstream" -value "0" -objects $obj
 set_property -name "strategy" -value "Vivado Implementation Defaults" -objects $obj
 set_property -name "steps.write_bitstream.args.readback_file" -value "0" -objects $obj

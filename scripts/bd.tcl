@@ -43,7 +43,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 
 set list_projs [get_projects -quiet]
 if { $list_projs eq "" } {
-   create_project project_1 myproj -part xc7k355tffg901-2
+   create_project project_1 myproj -part xc7k420tffg901-2
 }
 
 
@@ -186,8 +186,8 @@ proc write_mig_file_system_mig_7series_0_0 { str_mig_prj_filepath } {
    puts $mig_prj_file {    <DataDepth_En>1024</DataDepth_En>}
    puts $mig_prj_file {    <LowPower_En>ON</LowPower_En>}
    puts $mig_prj_file {    <XADC_En>Enabled</XADC_En>}
-   puts $mig_prj_file {    <TargetFPGA>xc7k355t-ffg901/-2</TargetFPGA>}
-   puts $mig_prj_file {    <Version>4.0</Version>}
+   puts $mig_prj_file {    <TargetFPGA>xc7k420t-ffg901/-2</TargetFPGA>}
+   puts $mig_prj_file {    <Version>4.1</Version>}
    puts $mig_prj_file {    <SystemClock>No Buffer</SystemClock>}
    puts $mig_prj_file {    <ReferenceClock>No Buffer</ReferenceClock>}
    puts $mig_prj_file {    <SysResetPolarity>ACTIVE LOW</SysResetPolarity>}
@@ -726,7 +726,7 @@ proc create_root_design { parentCell } {
 
   # Generate the PRJ File for MIG
   set str_mig_folder [get_property IP_DIR [ get_ips [ get_property CONFIG.Component_Name $mig_7series_0 ] ] ]
-  set str_mig_file_name mig_b.prj
+  set str_mig_file_name mig_a.prj
   set str_mig_file_path ${str_mig_folder}/${str_mig_file_name}
 
   write_mig_file_system_mig_7series_0_0 $str_mig_file_path
@@ -734,7 +734,7 @@ proc create_root_design { parentCell } {
   set_property -dict [ list \
    CONFIG.BOARD_MIG_PARAM {Custom} \
    CONFIG.RESET_BOARD_INTERFACE {Custom} \
-   CONFIG.XML_INPUT_FILE {mig_b.prj} \
+   CONFIG.XML_INPUT_FILE {mig_a.prj} \
  ] $mig_7series_0
 
   # Create instance: rst_mig_7series_0_133M, and set properties
@@ -746,7 +746,7 @@ proc create_root_design { parentCell } {
   # Create instance: system_ila_0, and set properties
   set system_ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_0 ]
   set_property -dict [ list \
-   CONFIG.C_BRAM_CNT {6} \
+   CONFIG.C_BRAM_CNT {0} \
    CONFIG.C_MON_TYPE {INTERFACE} \
    CONFIG.C_NUM_MONITOR_SLOTS {2} \
    CONFIG.C_SLOT {1} \
@@ -773,7 +773,7 @@ proc create_root_design { parentCell } {
   # Create instance: system_ila_1, and set properties
   set system_ila_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:system_ila:1.1 system_ila_1 ]
   set_property -dict [ list \
-   CONFIG.C_BRAM_CNT {6} \
+   CONFIG.C_BRAM_CNT {0} \
    CONFIG.C_MON_TYPE {INTERFACE} \
    CONFIG.C_NUM_MONITOR_SLOTS {1} \
    CONFIG.C_SLOT_0_APC_EN {0} \
@@ -890,7 +890,7 @@ HDL_ATTRIBUTE.DEBUG {true} \
   connect_bd_net -net xlconstant_0_dout [get_bd_pins xlconcat_0/In1] [get_bd_pins xlconstant_0/dout]
 
   # Create address segments
-  create_bd_addr_seg -range 0x80000000 -offset 0x00000000 [get_bd_addr_spaces axi_dma_0/Data_S2MM] [get_bd_addr_segs mig_7series_0/memmap/memaddr] SEG_mig_7series_0_memaddr
+  create_bd_addr_seg -range 0x80000000 -offset 0x80000000 [get_bd_addr_spaces axi_dma_0/Data_S2MM] [get_bd_addr_segs mig_7series_0/memmap/memaddr] SEG_mig_7series_0_memaddr
   create_bd_addr_seg -range 0x00001000 -offset 0x00001000 [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs axi_dma_0/S_AXI_LITE/Reg] SEG_axi_dma_0_Reg
   create_bd_addr_seg -range 0x00001000 -offset 0x00000000 [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs axi_gpio_0/S_AXI/Reg] SEG_axi_gpio_0_Reg
   create_bd_addr_seg -range 0x00010000 -offset 0x00010000 [get_bd_addr_spaces xdma_0/M_AXI_LITE] [get_bd_addr_segs axi_traffic_gen_0/S_AXI/Reg0] SEG_axi_traffic_gen_0_Reg0
@@ -918,8 +918,8 @@ preplace inst axi_dma_0 -pg 1 -lvl 2 -y 910 -defaultsOSRD
 preplace inst xlconstant_0 -pg 1 -lvl 4 -y 180 -defaultsOSRD
 preplace inst rst_xdma_0_250M -pg 1 -lvl 2 -y 370 -defaultsOSRD
 preplace inst mig_7series_0 -pg 1 -lvl 4 -y 490 -defaultsOSRD
-preplace inst mb -pg 1 -lvl 5 -y 620 -defaultsOSRD
 preplace inst axi_traffic_gen_0 -pg 1 -lvl 1 -y 890 -defaultsOSRD
+preplace inst mb -pg 1 -lvl 5 -y 620 -defaultsOSRD
 preplace inst xlconcat_0 -pg 1 -lvl 5 -y 170 -defaultsOSRD
 preplace inst xdma_0_axi_periph -pg 1 -lvl 3 -y 260 -defaultsOSRD
 preplace inst rst_mig_7series_0_133M -pg 1 -lvl 2 -y 550 -defaultsOSRD
@@ -930,37 +930,37 @@ preplace inst system_ila_0 -pg 1 -lvl 3 -y 980 -defaultsOSRD
 preplace inst axi_interconnect_0 -pg 1 -lvl 3 -y 560 -defaultsOSRD
 preplace inst system_ila_1 -pg 1 -lvl 3 -y -20 -defaultsOSRD
 preplace inst clk_wiz_0 -pg 1 -lvl 1 -y 430 -defaultsOSRD
-preplace netloc mig_7series_0_mmcm_locked 1 1 4 310 760 NJ 760 NJ 760 1570
-preplace netloc axi_traffic_gen_0_M_AXIS_MASTER 1 1 2 230 1010 730
-preplace netloc xdma_0_axi_periph_M01_AXI 1 1 3 310J 1070 NJ 1070 1210
+preplace netloc mig_7series_0_mmcm_locked 1 1 4 310 790 NJ 790 NJ 790 1600
+preplace netloc axi_traffic_gen_0_M_AXIS_MASTER 1 1 2 290 810 750
 preplace netloc mig_7series_0_DDR3 1 4 2 NJ 450 NJ
+preplace netloc xdma_0_axi_periph_M01_AXI 1 1 3 300J 740 NJ 740 1240
 preplace netloc util_ds_buf_IBUF_OUT 1 1 1 NJ
-preplace netloc mig_7series_0_init_calib_complete 1 4 1 1600
-preplace netloc microblaze_0_Clk 1 1 4 230 750 N 750 1270 630 N
-preplace netloc xdma_0_axi_aclk 1 0 4 -90 1000 240 -20 770 80 1260
+preplace netloc mig_7series_0_init_calib_complete 1 4 1 1640
+preplace netloc microblaze_0_Clk 1 1 4 250 -100 N -100 N -100 1630
+preplace netloc xdma_0_axi_aclk 1 0 4 -80 790 260 -20 780 90 1280
 preplace netloc clk_50_1 1 0 1 NJ
 preplace netloc diff_clock_rtl_0_1 1 0 1 NJ
-preplace netloc rst_xdma_0_250M_interconnect_aresetn 1 2 1 780
-preplace netloc xdma_0_axi_aresetn 1 0 4 -80 990 250 0 750 90 1220
-preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 720 710 1240J
-preplace netloc mig_7series_0_ui_clk 1 1 4 300 650 740 720 NJ 720 1580
-preplace netloc axi_dma_0_s2mm_introut 1 1 2 310 -10 730
-preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 1250
+preplace netloc rst_xdma_0_250M_interconnect_aresetn 1 2 1 790
+preplace netloc xdma_0_axi_aresetn 1 0 4 -100 780 270 0 760 80 1290
+preplace netloc rst_mig_7series_0_133M_peripheral_aresetn 1 2 2 770 760 1320J
+preplace netloc mig_7series_0_ui_clk 1 1 4 300 650 750 780 NJ 780 1610
+preplace netloc axi_dma_0_s2mm_introut 1 1 2 310 -10 740
+preplace netloc xdma_0_axi_periph_M00_AXI 1 3 1 1270
 preplace netloc xlconstant_0_dout 1 4 1 NJ
-preplace netloc xlconcat_0_dout 1 4 2 NJ 310 1840
-preplace netloc clk_wiz_0_clk_out1 1 1 3 270 730 N 730 1230
-preplace netloc xdma_0_M_AXI 1 2 1 790
+preplace netloc xlconcat_0_dout 1 4 2 NJ 310 1960
+preplace netloc clk_wiz_0_clk_out1 1 1 3 230 -120 N -120 1300
 preplace netloc axi_uartlite_0_UART 1 5 1 NJ
-preplace netloc axi_interconnect_0_M00_AXI 1 3 1 1220
 preplace netloc axi_iic_0_IIC 1 5 1 NJ
-preplace netloc axi_dma_0_M_AXI_S2MM 1 2 1 790J
-preplace netloc sys_rst_0_1 1 0 5 NJ 200 280 780 NJ 780 1250 610 NJ
-preplace netloc mig_7series_0_ui_clk_sync_rst 1 1 4 290 770 NJ 770 NJ 770 1590
-preplace netloc clk_wiz_0_clk_out2 1 1 3 260 740 N 740 1260
+preplace netloc xdma_0_M_AXI 1 2 1 800
+preplace netloc axi_interconnect_0_M00_AXI 1 3 1 1250
+preplace netloc axi_dma_0_M_AXI_S2MM 1 2 1 800J
+preplace netloc sys_rst_0_1 1 0 5 NJ 200 280 770 NJ 770 1310 610 NJ
+preplace netloc mig_7series_0_ui_clk_sync_rst 1 1 4 290 800 NJ 800 NJ 800 1620
+preplace netloc clk_wiz_0_clk_out2 1 1 3 240 -110 N -110 1260
 preplace netloc xdma_0_pcie_mgt 1 2 4 NJ 100 NJ 100 NJ 100 NJ
-preplace netloc xdma_0_M_AXI_LITE 1 2 1 760
-preplace netloc xdma_0_axi_periph_M02_AXI 1 0 4 -100 1020 NJ 1020 800J 890 1200
-levelinfo -pg 1 -120 80 550 1050 1430 1720 1880 -top -450 -bot 1250
+preplace netloc xdma_0_M_AXI_LITE 1 2 1 750
+preplace netloc xdma_0_axi_periph_M02_AXI 1 0 4 -90 750 NJ 750 NJ 750 1230
+levelinfo -pg 1 -120 80 563 1076 1460 1840 1980 -top -450 -bot 1370
 ",
 }
 
